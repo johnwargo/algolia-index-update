@@ -1,0 +1,8 @@
+# Folders
+src/
+_site/
+
+# Files
+.gitignore
+tsconfig.json
+package-lock.json
