@@ -41,7 +41,8 @@ function writeConsole(color: HighlightType, highlightText: string, msg: string) 
 
 console.log(boxen(appName, { padding: 1 }));
 
-console.dir(algCredentials);
+// TODO: Check for Algolia credentials
+// console.dir(algCredentials);
 
 // Check our command-line argument
 const pathObj: any = path.parse(process.argv[0]);
