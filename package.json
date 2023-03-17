@@ -1,6 +1,6 @@
 {
   "name": "algolia-index-update",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Uploads an Algolia index from a local folder",
   "type": "module",
   "main": "algolia-index-update.js",
