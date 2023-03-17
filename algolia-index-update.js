@@ -10,18 +10,22 @@ import path from 'path';
 import indexing from 'algolia-indexing';
 import boxen from 'boxen';
 import chalk from 'chalk';
+import dayjs from 'dayjs';
 const red = HighlightType.Red;
 const yellow = HighlightType.Yellow;
 const green = HighlightType.Green;
 const appName = 'Algolia Index Update';
 const defaultFilePath = '_site/algolia.json';
 const newline = "\n";
-const algCredentials = {
+const algoliaCreds = {
     appId: process.env.ALGOLIA_APP_ID,
     apiKey: process.env.ALGOLIA_API_KEY,
     indexName: process.env.ALGOLIA_IDX_NAME
 };
 var inputFilePath;
+function commaize(value) {
+    return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+}
 function writeConsole(color, highlightText, msg) {
     if (color == HighlightType.Red)
         console.log(newline + chalk.red(`${highlightText}: `) + msg + newline);
@@ -31,7 +35,17 @@ function writeConsole(color, highlightText, msg) {
         console.log(chalk.green(`${highlightText}: `) + msg);
 }
 console.log(boxen(appName, { padding: 1 }));
-console.dir(algCredentials);
+let validConfig = true;
+if (algoliaCreds.appId == undefined)
+    validConfig = false;
+if (algoliaCreds.apiKey == undefined)
+    validConfig = false;
+if (algoliaCreds.indexName == undefined)
+    validConfig = false;
+if (!validConfig) {
+    writeConsole(red, 'Error', 'One or more Algolia credentials environment variables missing.');
+    process.exit(1);
+}
 const pathObj = path.parse(process.argv[0]);
 var commandArg = pathObj.name == 'node' ? process.argv[2] : process.argv[1];
 if (commandArg == undefined) {
@@ -40,7 +54,7 @@ if (commandArg == undefined) {
 }
 let tmpFilePath = commandArg == '--default' ? defaultFilePath : commandArg;
 inputFilePath = path.join(process.cwd(), tmpFilePath);
-writeConsole(yellow, 'Algolia Index', inputFilePath);
+writeConsole(yellow, 'Index: ', inputFilePath);
 try {
     if (!fs.existsSync(inputFilePath)) {
         writeConsole(red, 'Error', 'Algolia index file does not exist, please try again');
@@ -53,5 +67,16 @@ catch (err) {
 }
 let rawData = fs.readFileSync(inputFilePath);
 let idxData = JSON.parse(rawData.toString());
-console.log(`Processing ${idxData.length} articles.`);
+console.log(`Processing index for ${idxData.length} articles.`);
+let startTime = dayjs(Date.now());
 indexing.verbose();
+try {
+    await indexing.fullAtomic(algoliaCreds, idxData, {});
+}
+catch (err) {
+    writeConsole(red, 'Error', err.message);
+    process.exit(1);
+}
+;
+let diffStr = commaize(Math.abs(startTime.diff(dayjs(Date.now()), 'second', true)));
+console.log(`Processing completed in ${diffStr} seconds`);

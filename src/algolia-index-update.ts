@@ -15,6 +15,7 @@ import path from 'path';
 import indexing from 'algolia-indexing';
 import boxen from 'boxen';
 import chalk from 'chalk';
+import dayjs from 'dayjs'
 
 // local constants
 const red = HighlightType.Red;
@@ -25,13 +26,17 @@ const appName = 'Algolia Index Update';
 const defaultFilePath = '_site/algolia.json';
 const newline = "\n";
 
-const algCredentials = {
+const algoliaCreds = {
     appId: process.env.ALGOLIA_APP_ID,
     apiKey: process.env.ALGOLIA_API_KEY,
     indexName: process.env.ALGOLIA_IDX_NAME
 };
 
 var inputFilePath;
+
+function commaize(value: number) {
+    return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+}
 
 function writeConsole(color: HighlightType, highlightText: string, msg: string) {
     if (color == HighlightType.Red) console.log(newline + chalk.red(`${highlightText}: `) + msg + newline);
@@ -41,8 +46,15 @@ function writeConsole(color: HighlightType, highlightText: string, msg: string) 
 
 console.log(boxen(appName, { padding: 1 }));
 
-// TODO: Check for Algolia credentials
-// console.dir(algCredentials);
+// Validate the Algolia credentials
+let validConfig = true;
+if (algoliaCreds.appId == undefined) validConfig = false;
+if (algoliaCreds.apiKey == undefined) validConfig = false;
+if (algoliaCreds.indexName == undefined) validConfig = false;
+if (!validConfig) {
+    writeConsole(red, 'Error', 'One or more Algolia credentials environment variables missing.');
+    process.exit(1);
+}
 
 // Check our command-line argument
 const pathObj: any = path.parse(process.argv[0]);
@@ -56,7 +68,7 @@ if (commandArg == undefined) {
 let tmpFilePath = commandArg == '--default' ? defaultFilePath : commandArg;
 inputFilePath = path.join(process.cwd(), tmpFilePath);
 
-writeConsole(yellow, 'Algolia Index', inputFilePath);
+writeConsole(yellow, 'Index: ', inputFilePath);
 try {
     if (!fs.existsSync(inputFilePath)) {
         writeConsole(red, 'Error',
@@ -72,13 +84,14 @@ let rawData = fs.readFileSync(inputFilePath);
 let idxData = JSON.parse(rawData.toString());
 
 console.log(`Processing index for ${idxData.length} articles.`);
-
+let startTime = dayjs(Date.now());
 indexing.verbose();
-
-// const settings = {};
-// try {
-//     await indexing.fullAtomic(algCredentials, data, settings);
-// } catch (e) {
-//     console.log('error in fullAtomic', e);
-// };
-// console.log('Algolia indexing updated. Hopefully.');
+try {
+    await indexing.fullAtomic(algoliaCreds, idxData, {});
+} catch (err: any) {
+    writeConsole(red, 'Error', err.message);
+    process.exit(1);
+};
+// let endTime = dayjs(Date.now());
+let diffStr = commaize(Math.abs(startTime.diff(dayjs(Date.now()), 'second', true)));
+console.log(`Processing completed in ${diffStr} seconds`);
