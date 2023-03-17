@@ -4,7 +4,7 @@ A command-line utility for web sites using Algolia (for site indexing and search
 
 In the article, @cfjedimaster shows how to use generate the Algolia index from an [Eleventy](https://www.11ty.dev/) site and use [Netlify](https://www.netlify.com/) Functions to merge the updated index and upload it to Algolia during a Netlify build process. In the article he also mentioned a 10 minute limit for executing Cloud Functions in Netlify, and that scared me a little bit. Since I'm comfortable using a local generation and deployment process for my site's Algolia index, I decided to build this command-line module to handle the task for me.
 
-![The module in action](images/image-02.png)
+![The module in action](https://github.com/johnwargo/algolia-index-update/blob/main/images/image-02.png)
 
 Here's a link to the NPM project:
 
