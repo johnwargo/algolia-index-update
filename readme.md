@@ -44,3 +44,52 @@ To use the module, you must first define the environment variables listed in the
 | `ALGOLIA_IDX_NAME`        | Algolia project Index Name     |
 
 The module reads these environment variables and uses their values when merging the updated index with the Algolia cloud project. The module uses environment variables to enable hiding the values from the project's source code in GitHub (or some other source code repository) and allows the module to run in cloud hosting environments like Netlify.
+
+There are two options for executing the module:
+
+```shell
+algolia-idxup --default
+```
+
+and
+
+```shell
+algolia-idxup <path_to_the_algolia_index>
+```
+
+The first option looks for the Algolia index file at the default location for an Eleventy project: `_site/_data`
+
+The second option allows you to pass the relative path of the index file. For example, if the index file was called `siteidx.json` and it was located in the local `data` folder, then you would execute the command using:
+
+```shell
+algolia-idxup data/siteidx.json
+```
+
+The module first validates the required environment variables, then confirms that it can locate the index file. With those two components in place, the module clicks and whirs for a while as it completes the index update/merge as shown below.
+
+```text
+D:\dev\11ty\random-errors-static>algolia-idxup --default
+┌──────────────────────────┐
+│                          │
+│   Algolia Index Update   │
+│                          │
+└──────────────────────────┘
+Index: : D:\dev\node\algolia-index-update\_site\algolia.json
+Processing index for 17 articles.
+√ Copying random-errors-main to random-errors-main_tmp
+√ Updating settings of random-errors-main_tmp
+√ Getting all records from random-errors-main_tmp
+√ Moving random-errors-main_tmp to random-errors-main
+√ Configuring replicas of random-errors-main
+Processing completed in 43.687 seconds
+
+D:\dev\node\algolia-index-update>
+```
+
+That's pretty much it. Enjoy!
+
+***
+
+You can find information on many different topics on my [personal blog](http://www.johnwargo.com). Learn about all of my publications at [John Wargo Books](http://www.johnwargobooks.com).
+
+If you find this code useful and feel like thanking me for providing it, please consider <a *href*="https://www.buymeacoffee.com/johnwargo" *target*="_blank">Buying Me a Coffee</a>, or making a purchase from [my Amazon Wish List](https://amzn.com/w/1WI6AAUKPT5P9).
