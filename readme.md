@@ -1,11 +1,19 @@
 # Algolia Index Update
 
-Command-line utility for npm-based 
+A command-line utility for web sites using Algolia (for site indexing and search) to merge an updated index with an Algolia project data source. The module is based on the process outlined in [Adding Algolia Search to Eleventy and Netlify](https://www.raymondcamden.com/2020/06/24/adding-algolia-search-to-eleventy-and-netlify). In the article, @cfjedimaster shows how to use generate the Algolia index from an [Eleventy](https://www.11ty.dev/) site and use [Netlify](https://www.netlify.com/) Functions to merge the updated index and upload it to Algolia during a Netlify build process. In the article he also mentioned a 10 minute limit for executing Cloud Functions in Netlify, and that scared me a little bit. Since I'm comfortable using a local generation and deployment process for my site's Algolia index, I decided to build this command-line module to handle the task for me.
 
-Algolia projects that merges a local index JSON file with an Algolia index in the cloud The module is based on the process outlined in [Adding Algolia Search to Eleventy and Netlify](https://www.raymondcamden.com/2020/06/24/adding-algolia-search-to-eleventy-and-netlify). 
-
-Assumes you already have an algolia 
 Here's a link to the NPM project:
+
+**Note:** You don't have to use Eleventy to use this module, all it cares about is local access to an Algolia site index and the Algolia project and account API keys needed to merge the local index with the Algolia project data source.
+
+To use the module,  you must have:
+
+* An Algolia Application project and data source set defined in Algolia. 
+* The Algolia Application ID for your site's Algolia project.
+* The Admin API keys for your Algolia account.
+* The name of the Algolia project's index.
+
+
 
 ## Installation 
 
