@@ -23,7 +23,7 @@ To install the module as a dependency in the application project, open a termina
 npm install algolia-index-update --save-dev 
 ```
 
-This approach allows you to easily execute the module in the standard npm run build process.
+This adds an `algolia-idxup` command you can execute through the standard `npm run` build process at the command-line or in the project's `package.json` file.
 
 To install the module globally, open a terminal window or command prompt and execute the following command:
 
@@ -31,15 +31,16 @@ To install the module globally, open a terminal window or command prompt and exe
 npm install algolia-index-update -g
 ```
 
-## Installation
+This adds an `algolia-idxup` command you can execute from any terminal window or command prompt on the system. 
 
-With this approach, you can execute the module in a terminal window or command prompt from any folder on your development system.
+## Usage
 
+To use the module, you must first define the environment variables listed in the following table:
 
-Requires that you set three environment variables on the system running the module:
+| Environment Variable Name | Algolia Project Key or Value   |
+| ------------------------- | ------------------------------ |
+| `ALGOLIA_API_KEY`         | Algolia account Admin API Key  |
+| `ALGOLIA_APP_ID`          | Algolia project Application ID |
+| `ALGOLIA_IDX_NAME`        | Algolia project Index Name     |
 
-| Environment Variable | Algolia Project Key or Value |
-| -------------------- | ---------------------------- |
-| ALGOLIA_APP_ID       | Application ID               |
-| ALGOLIA_API_KEY      | Admin API Key                | 
-| ALGOLIA_IDX_NAME     | Index Name                   | 
+The module reads these environment variables and uses their values when merging the updated index with the Algolia cloud project. The module uses environment variables to enable hiding the values from the project's source code in GitHub (or some other source code repository) and allows the module to run in cloud hosting environments like Netlify.
