@@ -8,8 +8,10 @@ var HighlightType;
 import fs from 'fs';
 import path from 'path';
 import { Command } from 'commander';
+import indexing from 'algolia-indexing';
 import boxen from 'boxen';
 import chalk from 'chalk';
+import dayjs from 'dayjs';
 const red = HighlightType.Red;
 const yellow = HighlightType.Yellow;
 const green = HighlightType.Green;
@@ -85,5 +87,18 @@ program
     }
     let rawData = fs.readFileSync(inputFilePath);
     let idxData = JSON.parse(rawData.toString());
+    console.log(`Processing index for ${idxData.length} articles.`);
+    let startTime = dayjs(Date.now());
+    indexing.verbose();
+    try {
+        await indexing.fullAtomic(algoliaCreds, idxData, {});
+    }
+    catch (err) {
+        writeConsole(red, 'Error', err.message);
+        process.exit(1);
+    }
+    ;
+    let diffStr = commaize(Math.abs(startTime.diff(dayjs(Date.now()), 'second', true)));
+    console.log(`Processing completed in ${diffStr} seconds`);
 });
 program.parse();
