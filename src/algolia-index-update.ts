@@ -77,6 +77,7 @@ program
             indexName: process.env[algoliaIndexNameStr]
         };
 
+        // TODO: reformat algoliaCreds into something you can output using writeConsole (json.stringify)
         if (debugMode) console.dir(algoliaCreds);
 
         // Validate the Algolia credentials
