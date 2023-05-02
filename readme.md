@@ -47,27 +47,41 @@ To use the module, you must first define the environment variables listed in the
 
 The module reads these environment variables and uses their values when merging the updated index with the Algolia cloud project. It uses environment variables to enable hiding the values from the project's source code in GitHub (or some other source code repository) and allows the module to run in cloud hosting environments like Netlify.
 
+If you use Algolia for multiple sites, you need a way to distinguish the app id and index names, so you can create a second set of credentials and append a prefix to the environment variables. For example, for my Random Errors site, I use a prefix of `RE_` and I setup my variable names like this:
+
+| Environment Variable Name | Algolia Project Key or Value   |
+| ------------------------- | ------------------------------ |
+| `RE_ALGOLIA_API_KEY`      | Algolia account Admin API key  |
+| `RE_ALGOLIA_APP_ID`       | Algolia project Application ID |
+| `RE_ALGOLIA_IDX_NAME`     | Algolia project Index name     |
+
 There are two options for executing the module:
-
-```shell
-algolia-idxup --default
-```
-
-and
 
 ```shell
 algolia-idxup <path_to_the_algolia_index>
 ```
 
-The first option looks for the Algolia index file at the default location for an Eleventy project: `_site/_data`
-
-The second option allows you to pass the relative path of the index file. For example, if the index file was called `siteidx.json` and it was located in the local `data` folder, then you would execute the command using:
+or
 
 ```shell
-algolia-idxup data/siteidx.json
+algolia-idxup <path_to_the_algolia_index> [environment_variable_prefix]
 ```
 
-The module first validates the required environment variables, then confirms that it can locate the index file. With those two components in place, the module clicks and whirs for a while as it completes the index update/merge as shown below.
+Lets see some examples:
+
+To process the Algolia index at `_site/_data` with no prefix on the environment variable names, use the following:
+
+```shell
+algolia-idxup _site/algolia.json
+```
+
+To use the prefixed environment variables described in the second table, use the following
+
+```shell
+algolia-idxup _site/algolia.json RE_
+```
+
+The module validates the required environment variables, then confirms that it can locate the index file. With those two components in place, the module clicks and whirs for a while as it completes the index update/merge as shown below.
 
 ```text
 D:\dev\11ty\random-errors-static>algolia-idxup --default
@@ -86,6 +100,12 @@ Processing index for 17 articles.
 Processing completed in 43.687 seconds
 
 D:\dev\node\algolia-index-update>
+```
+
+If you want to see more output as the command runs, add a -d to the command line:
+
+```shell
+algolia-idxup _site/algolia.json -d
 ```
 
 That's pretty much it. Enjoy!

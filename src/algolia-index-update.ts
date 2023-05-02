@@ -72,8 +72,8 @@ program
         }
 
         const algoliaCreds = {
-            appId: process.env[algoliaApiKeyStr],
-            apiKey: process.env[algoliaAppIdKeyStr],
+            appId: process.env[algoliaAppIdKeyStr],
+            apiKey: process.env[algoliaApiKeyStr],
             indexName: process.env[algoliaIndexNameStr]
         };
 
