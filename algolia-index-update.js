@@ -38,6 +38,7 @@ program
     .argument('<sourcePath>', 'Relative path for the source index file')
     .argument('[variablePrefix]', 'Environment variable prefix', '')
     .option('-d, --debug', 'Debug mode')
+    .option('-f, --file <filePath>', 'Enable file-based credentials (with path to file)')
     .action(async (sourcePath, variablePrefix) => {
     console.log();
     const options = program.opts();
@@ -46,6 +47,9 @@ program
         console.log('Debug mode enabled.');
         writeConsole(yellow, 'Source Path', sourcePath);
         writeConsole(yellow, 'Variable prefix', variablePrefix);
+        if (options.file) {
+            writeConsole(yellow, 'File path', options.file);
+        }
     }
     inputFilePath = path.join(process.cwd(), sourcePath);
     writeConsole(yellow, 'Index path', inputFilePath);
@@ -57,11 +61,26 @@ program
     else {
         writeConsole(yellow, 'Info', 'Using root environment variables.');
     }
-    const algoliaCreds = {
-        appId: process.env[algoliaAppIdKeyStr],
-        apiKey: process.env[algoliaApiKeyStr],
-        indexName: process.env[algoliaIndexNameStr]
-    };
+    const algoliaCreds = { appId: '', apiKey: '', indexName: '' };
+    if (options.file) {
+        writeConsole(yellow, 'Info', 'Using file-based credentials.');
+        let filePath = path.join(process.cwd(), options.file);
+        if (!fs.existsSync(filePath)) {
+            writeConsole(red, 'Error', 'Credentials file does not exist, please try again');
+            process.exit(1);
+        }
+        let rawData = fs.readFileSync(filePath);
+        let fileData = JSON.parse(rawData.toString());
+        algoliaCreds.appId = fileData[algoliaAppIdKeyStr];
+        algoliaCreds.apiKey = fileData[algoliaApiKeyStr];
+        algoliaCreds.indexName = fileData[algoliaIndexNameStr];
+    }
+    else {
+        algoliaCreds.appId = process.env[algoliaAppIdKeyStr];
+        algoliaCreds.apiKey = process.env[algoliaApiKeyStr];
+        algoliaCreds.indexName = process.env[algoliaIndexNameStr];
+    }
+    ;
     if (debugMode)
         console.dir(algoliaCreds);
     let validConfig = true;

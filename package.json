@@ -9,7 +9,7 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "tsc && algolia-idxup _site/algolia.json RE_ -d"
+    "start": "tsc && algolia-idxup _site/algolia.json WWA_ -d -f ../algolia-creds.json"
   },
   "author": "John M. Wargo",
   "repository": {

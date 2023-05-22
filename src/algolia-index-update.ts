@@ -2,6 +2,12 @@
 
 // https://www.raymondcamden.com/2020/06/24/adding-algolia-search-to-eleventy-and-netlify
 
+type AlgoliaCredentials = {
+    appId: string;
+    apiKey: string;
+    indexName: string;
+}
+
 enum HighlightType {
     Red, Yellow, Green
 }
@@ -48,6 +54,7 @@ program
     .argument('<sourcePath>', 'Relative path for the source index file')
     .argument('[variablePrefix]', 'Environment variable prefix', '')
     .option('-d, --debug', 'Debug mode')
+    .option('-f, --file <filePath>', 'Enable file-based credentials (with path to file)')
     .action(async (sourcePath, variablePrefix) => {
 
         console.log();
@@ -58,6 +65,9 @@ program
             console.log('Debug mode enabled.');
             writeConsole(yellow, 'Source Path', sourcePath);
             writeConsole(yellow, 'Variable prefix', variablePrefix);
+            if (options.file) {
+                writeConsole(yellow, 'File path', options.file);
+            }
         }
 
         inputFilePath = path.join(process.cwd(), sourcePath);
@@ -71,10 +81,27 @@ program
             writeConsole(yellow, 'Info', 'Using root environment variables.');
         }
 
-        const algoliaCreds = {
-            appId: process.env[algoliaAppIdKeyStr],
-            apiKey: process.env[algoliaApiKeyStr],
-            indexName: process.env[algoliaIndexNameStr]
+        const algoliaCreds: AlgoliaCredentials = { appId: '', apiKey: '', indexName: '' }
+
+        if (options.file) {
+            writeConsole(yellow, 'Info', 'Using file-based credentials.');
+            let filePath = path.join(process.cwd(), options.file);
+            if (!fs.existsSync(filePath)) {
+                writeConsole(red, 'Error', 'Credentials file does not exist, please try again');
+                process.exit(1);
+            }
+            let rawData = fs.readFileSync(filePath);
+            let fileData = JSON.parse(rawData.toString());
+            // grab the credentials from the file
+            algoliaCreds.appId = fileData[algoliaAppIdKeyStr];
+            algoliaCreds.apiKey = fileData[algoliaApiKeyStr];
+            algoliaCreds.indexName = fileData[algoliaIndexNameStr];
+        } else {
+            writeConsole(yellow, 'Info', 'Using environment-based credentials.');
+            // grab the credentials from the environment
+            algoliaCreds.appId = process.env[algoliaAppIdKeyStr]!;
+            algoliaCreds.apiKey = process.env[algoliaApiKeyStr]!;
+            algoliaCreds.indexName = process.env[algoliaIndexNameStr]!;
         };
 
         // TODO: reformat algoliaCreds into something you can output using writeConsole (json.stringify)
