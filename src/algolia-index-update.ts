@@ -143,7 +143,6 @@ program
         // let endTime = dayjs(Date.now());
         let diffStr = commaize(Math.abs(startTime.diff(dayjs(Date.now()), 'second', true)));
         console.log(`Processing completed in ${diffStr} seconds`);
-
     });
 
 program.parse();
