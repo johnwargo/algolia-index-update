@@ -1,6 +1,6 @@
 {
   "name": "algolia-index-update",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Uploads an Algolia index from a local folder",
   "type": "module",
   "main": "algolia-index-update.js",
@@ -28,5 +28,7 @@
     "commander": "^10.0.1",
     "dayjs": "^1.11.7"
   },
-  "keywords": ["algolia"]
+  "keywords": [
+    "algolia"
+  ]
 }
