@@ -81,6 +81,27 @@ To use the prefixed environment variables described in the second table, use the
 algolia-idxup _site/algolia.json RE_
 ```
 
+Alternatively, when you have more than one Algolia project, you can provide the Algolia credentials via a JSON file using the `-f` or `--file` flag coupled with the path to the JSON file:
+
+```shell
+algolia-idxup _site/algolia.json RE_ -f ..\algolia-credentials.json
+```
+
+The `algolia-credentials.json` file looks like this:
+
+```json
+{
+  "ALGOLIA_APP_ID": "Root_Algolia_App_ID",
+  "ALGOLIA_API_KEY": "Root_Algolia_API_Key",
+  "ALGOLIA_IDX_NAME": "Root_Algolia_Idx_name",
+  "RE_ALGOLIA_APP_ID": "Random_Errors_App_ID",
+  "RE_ALGOLIA_API_KEY": "Random =_Errors_API_Key",
+  "RE_ALGOLIA_IDX_NAME": "Random_Errors_Index_Name",
+}
+```
+
+Replacing, of course, the properties with the correct values for your different Algolia projects. 
+
 The module validates the required environment variables, then confirms that it can locate the index file. With those two components in place, the module clicks and whirs for a while as it completes the index update/merge as shown below.
 
 ```text
