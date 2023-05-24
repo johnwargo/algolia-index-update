@@ -46,7 +46,8 @@ program
     if (debugMode) {
         console.log('Debug mode enabled.');
         writeConsole(yellow, 'Source Path', sourcePath);
-        writeConsole(yellow, 'Variable prefix', variablePrefix);
+        if (variablePrefix != '')
+            writeConsole(yellow, 'Variable prefix', variablePrefix);
         if (options.file) {
             writeConsole(yellow, 'File path', options.file);
         }
@@ -59,7 +60,8 @@ program
         algoliaIndexNameStr = variablePrefix + algoliaIndexNameStr;
     }
     else {
-        writeConsole(yellow, 'Info', 'Using root environment variables.');
+        if (debugMode)
+            writeConsole(yellow, 'Info', 'Using root environment variables.');
     }
     const algoliaCreds = { appId: '', apiKey: '', indexName: '' };
     if (options.file) {
@@ -76,6 +78,7 @@ program
         algoliaCreds.indexName = fileData[algoliaIndexNameStr];
     }
     else {
+        writeConsole(yellow, 'Info', 'Using environment-based credentials.');
         algoliaCreds.appId = process.env[algoliaAppIdKeyStr];
         algoliaCreds.apiKey = process.env[algoliaApiKeyStr];
         algoliaCreds.indexName = process.env[algoliaIndexNameStr];
@@ -110,7 +113,6 @@ program
     let startTime = dayjs(Date.now());
     indexing.verbose();
     try {
-        await indexing.fullAtomic(algoliaCreds, idxData, {});
     }
     catch (err) {
         writeConsole(red, 'Error', err.message);

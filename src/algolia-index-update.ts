@@ -56,7 +56,6 @@ program
     .option('-d, --debug', 'Debug mode')
     .option('-f, --file <filePath>', 'Enable file-based credentials (with path to file)')
     .action(async (sourcePath, variablePrefix) => {
-
         console.log();
 
         const options = program.opts();
@@ -64,7 +63,7 @@ program
         if (debugMode) {
             console.log('Debug mode enabled.');
             writeConsole(yellow, 'Source Path', sourcePath);
-            writeConsole(yellow, 'Variable prefix', variablePrefix);
+            if (variablePrefix != '') writeConsole(yellow, 'Variable prefix', variablePrefix);
             if (options.file) {
                 writeConsole(yellow, 'File path', options.file);
             }
@@ -78,7 +77,7 @@ program
             algoliaAppIdKeyStr = variablePrefix + algoliaAppIdKeyStr;
             algoliaIndexNameStr = variablePrefix + algoliaIndexNameStr;
         } else {
-            writeConsole(yellow, 'Info', 'Using root environment variables.');
+            if (debugMode) writeConsole(yellow, 'Info', 'Using root environment variables.');
         }
 
         const algoliaCreds: AlgoliaCredentials = { appId: '', apiKey: '', indexName: '' }
