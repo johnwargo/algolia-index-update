@@ -113,6 +113,7 @@ program
     let startTime = dayjs(Date.now());
     indexing.verbose();
     try {
+        await indexing.fullAtomic(algoliaCreds, idxData, {});
     }
     catch (err) {
         writeConsole(red, 'Error', err.message);
